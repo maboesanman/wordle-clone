@@ -42,6 +42,14 @@ const config: Configuration = {
       extensions: ["js", "jsx", "ts", "tsx"],
     }),
   ],
+  experiments: {
+    asyncWebAssembly: true
+  },
+  ignoreWarnings: [
+    (warning) =>
+      warning.message ===
+      "Critical dependency: the request of a dependency is an expression",
+  ],
 };
 
 export default config;

@@ -22,5 +22,8 @@
       "pragma": "React",
       "version": "detect"
     }
-  }
+  },
+  "ignorePatterns": [
+    "core/**/*.*"
+  ]
 }
