@@ -1,4 +1,5 @@
-use rand::prelude::*;
+use rand::Rng;
+use rand::distributions::Distribution;
 
 pub struct Dictionary<'dict> {
     pub word_size: usize,

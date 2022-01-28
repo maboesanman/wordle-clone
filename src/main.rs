@@ -1,6 +1,8 @@
 use std::{collections::HashMap, io::{self, BufRead}};
 
 use wordle::Wordle;
+use rand::SeedableRng;
+use rand_chacha::ChaCha8Rng;
 
 use crate::dictionary::Dictionary;
 
@@ -17,10 +19,12 @@ fn main() {
         }
         converted
     };
-    
-    let mut rng = rand::thread_rng();
-    let std_in = io::stdin();
-    let inputs = std_in.lock().lines();
+    let mut seed: [u8; 32] = [0; 32];
+    getrandom::getrandom(&mut seed);
+    let mut rng = ChaCha8Rng::from_seed(seed);
+
+    // let std_in = io::stdin();
+    // let inputs = std_in.lock().lines();
 
 
     let size = 5;
@@ -28,20 +32,19 @@ fn main() {
 
     let mut wordle = Wordle::new_random(dict, &mut rng);
 
+    // wordle.print();
+    // for input in inputs {
+    //     let guess = match input {
+    //         Ok(guess) => guess,
+    //         Err(_) => panic!(),
+    //     };
 
-    wordle.print();
-    for input in inputs {
-        let guess = match input {
-            Ok(guess) => guess,
-            Err(_) => panic!(),
-        };
-
-        wordle.guess(&guess).unwrap_or_else(|s| {
-            println!("{s}")
-        });
-        wordle.print();
-        if wordle.finished() {
-            break
-        }
-    }
+    //     wordle.guess(&guess).unwrap_or_else(|s| {
+    //         println!("{s}")
+    //     });
+    //     wordle.print();
+    //     if wordle.finished() {
+    //         break
+    //     }
+    // }
 }
