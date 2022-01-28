@@ -10,7 +10,7 @@ use std::path::Path;
 
 fn main() {
     let out_dir = env::var_os("OUT_DIR").unwrap();
-    let file = File::open("english-words/words_alpha.txt").unwrap();
+    let file = File::open("dictionaries/WordleDictionary/wordle_complete_dictionary.txt").unwrap();
     let words = io::BufReader::new(file).lines();
     let mut words: Vec<_> = words.map(|l| l.unwrap()).collect();
     words.sort();

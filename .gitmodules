@@ -1,3 +1,9 @@
-[submodule "english-words"]
-	path = english-words
+[submodule "dictionaries/WordleDictionary"]
+	path = dictionaries/WordleDictionary
+	url = https://github.com/AllValley/WordleDictionary
+[submodule "dictionaries/Wordlist"]
+	path = dictionaries/Wordlist
+	url = https://github.com/jeremy-rifkin/Wordlist.git
+[submodule "dictionaries/english-words"]
+	path = dictionaries/english-words
 	url = https://github.com/dwyl/english-words.git
