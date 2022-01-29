@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 
 import RandomWord from "./random-word";
 import ValidateWord from "./validate-word";
+import Wordle from "./wordle";
 
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
       <h1>My React and TypeScript App!</h1>
       <RandomWord />
       <ValidateWord />
+      <Wordle />
     </div>
   )
 };
