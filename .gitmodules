@@ -7,3 +7,6 @@
 [submodule "dictionaries/english-words"]
 	path = core/dictionaries/english-words
 	url = https://github.com/dwyl/english-words.git
+[submodule "core/dictionaries/dictionary"]
+	path = core/dictionaries/dictionary
+	url = https://github.com/dolph/dictionary

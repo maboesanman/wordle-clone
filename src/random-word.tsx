@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 const wordleClone = import("wordle-clone");
 
 
-const App = () => {
+const RandomWord = () => {
   const [word, setWord] = useState("sdf");
   const randomize = () => wordleClone.then(wordleClone => {
     setWord(wordleClone.get_random_word(5));
@@ -21,4 +21,4 @@ const App = () => {
   )
 };
 
-export default App;
+export default RandomWord;

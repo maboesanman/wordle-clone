@@ -11,7 +11,8 @@ use std::path::Path;
 fn main() {
     let out_dir = env::var_os("OUT_DIR").unwrap();
     let wordle_official = "dictionaries/WordleDictionary/wordle_complete_dictionary.txt";
-    let word_lists = [
+    let scrabble_official = "dictionaries/dictionary/ospd.txt";
+    let other_word_lists = [
         "dictionaries/Wordlist/res/a.txt",
         "dictionaries/Wordlist/res/b.txt",
         "dictionaries/Wordlist/res/c.txt",
@@ -22,13 +23,13 @@ fn main() {
 
     let mut final_dictionary: HashMap<String, usize> = HashMap::new();
 
-    for path in word_lists.iter() {
+    for path in other_word_lists.iter() {
         let file = File::open(path).unwrap();
         let words = io::BufReader::new(file).lines();
 
         for word in words {
-            let word = word.unwrap();
-            if word.len() == 5 {
+            let word = word.unwrap().to_lowercase();
+            if word.len() <= 8 { // handled by scrabble or wordle
                 continue
             }
             match final_dictionary.get_mut(&word) {
@@ -40,10 +41,16 @@ fn main() {
         }
     }
 
+    let file = File::open(scrabble_official).unwrap();
+    let words = io::BufReader::new(file).lines();
+    for word in words {
+        final_dictionary.insert(word.unwrap().to_lowercase(), 100);
+    }
+
     let file = File::open(wordle_official).unwrap();
     let words = io::BufReader::new(file).lines();
     for word in words {
-        final_dictionary.insert(word.unwrap(), 100);
+        final_dictionary.insert(word.unwrap().to_lowercase(), 100);
     }
 
     final_dictionary.retain(|_, c| c > &mut 4);

@@ -49,3 +49,13 @@ pub fn get_random_word(n: u32) -> String {
     let mut rng = &mut *rng;
     dict.random_word(&mut rng).to_string()
 }
+
+#[wasm_bindgen]
+pub fn validate_word(word: String) -> bool {
+    let dict = match get_dictionary(word.len() as u32) {
+        Some(d) => d,
+        None => return false,
+    };
+
+    dict.validate_word(&word)
+}
