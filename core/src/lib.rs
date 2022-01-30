@@ -10,6 +10,7 @@ use once_cell::sync::OnceCell;
 use rand::SeedableRng;
 use rand_chacha::ChaCha8Rng;
 use wasm_bindgen::prelude::*;
+use wordle::WordleGuess;
 
 pub static DICTIONARIES: OnceCell<HashMap<usize, Dictionary<'static>>> = OnceCell::new();
 pub static RNG: OnceCell<Mutex<ChaCha8Rng>> = OnceCell::new();
@@ -43,6 +44,7 @@ fn get_rng() -> MutexGuard<'static, ChaCha8Rng> {
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+/// get a random n letter English word.
 #[wasm_bindgen]
 pub fn get_random_word(n: u32) -> String {
     let dict = match get_dictionary(n) {
@@ -54,8 +56,9 @@ pub fn get_random_word(n: u32) -> String {
     dict.random_word(rng).to_string()
 }
 
+/// determine if `word` is a valid english word or not.
 #[wasm_bindgen]
-pub fn validate_word(word: String) -> bool {
+pub fn validate_word(word: &str) -> bool {
     let dict = match get_dictionary(word.len() as u32) {
         Some(d) => d,
         None => return false,
@@ -64,61 +67,33 @@ pub fn validate_word(word: String) -> bool {
     dict.validate_word(&word)
 }
 
+/// evaluate a guess.
+/// returns an empty string if word and guess are not the same length.
+/// returns a string representing the intended hints
+/// 
+/// X: miss
+/// O: correct
+/// V: misplaced
+/// 
+/// for example
+/// 
+/// evaluate_guess("HOUSE", "HOMES") -> "OOXVV"
 #[wasm_bindgen]
-pub struct Wordle(wordle::Wordle<'static, 'static>);
+pub fn evaluate_guess(word: &str, guess: &str) -> String {
+    let wg = WordleGuess::new(word, guess);
+    wg.get_mask()
+}
 
+/// determine if the guesses are legal according to hard mode
+/// guesses are whitespace separated
 #[wasm_bindgen]
-impl Wordle {
-    /// Create a new random wordle, or make one from the optional word argument
-    #[wasm_bindgen(constructor)]
-    pub fn new(n: u32, word: Option<String>) -> Option<Wordle>
-    {
-        let dict = get_dictionary(n)?;
-        Some(Wordle(match word {
-            Some(word) => {
-                wordle::Wordle::new_from_word(dict, word)
-            },
-            None => {
-                let mut rng = get_rng();
-                let rng = &mut *rng;
-                wordle::Wordle::new_random(dict, rng)
-            },
-        }))
-    }
-
-    /// execute a guess.
-    /// 
-    /// the response is the error message. empty means no error.
-    pub fn guess(&mut self, word: &str) -> String {
-        match self.0.guess(word) {
-            Ok(_) => String::new(),
-            Err(err) => err,
-        }
-    }
-
-    /// Create a new random wordle 
-    pub fn finished(&self) -> bool {
-        self.0.finished()
-    }
-
-    /// get current state of wordle
-    pub fn current_state(&self) -> JsValue {
-        let wordle_state = self.0.current_state();
-
-        JsValue::from_serde(&wordle_state).unwrap()
-    }
+pub fn validate_hard(word: &str, guesses: &str) -> bool {
+    todo!()
 }
 
-#[wasm_bindgen(typescript_custom_section)]
-const IWORDLE_STATE: &'static str = r#"
-interface IWordleState  {
-    guesses: IWordleGuess[];
+/// determine if the guesses are legal according to hardcore mode
+/// guesses are whitespace separated
+#[wasm_bindgen]
+pub fn validate_hardcore(word: &str, guesses: &str) -> bool {
+    todo!()
 }
-interface IWordleGuess  {
-    characters: IWordleGuessCharacter[];
-}
-interface IWordleGuessCharacter {
-    character: string;
-    hint: WordleLetterHint;
-}
-"#;

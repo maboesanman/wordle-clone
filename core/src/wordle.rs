@@ -1,9 +1,7 @@
 use rand::Rng;
 use serde::{Serialize, Deserialize};
-use wasm_bindgen::prelude::wasm_bindgen;
 use core::hash::Hash;
 use std::collections::HashMap;
-use js_sys::Array;
 
 use crate::dictionary::Dictionary;
 
@@ -103,14 +101,35 @@ pub struct WordleGuess {
     pub characters: Vec<WordleGuessCharacter>
 }
 
-#[wasm_bindgen]
+impl WordleGuess {
+    pub fn new(word: &str, guess: &str) -> Self {
+        let hints = hint(word, guess).into_iter();
+
+        let characters = guess.chars().zip(hints).map(|(character, hint)| WordleGuessCharacter {
+            character,
+            hint
+        }).collect();
+
+        Self {
+            characters
+        }
+    }
+
+    pub fn get_mask(&self) -> String {
+        self.characters.iter().map(|c| match c.hint {
+            WordleLetterHint::Missing => 'X',
+            WordleLetterHint::Misplaced => 'V',
+            WordleLetterHint::Correct => 'O',
+        }).collect()
+    }
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct WordleGuessCharacter {
     pub character: char,
     pub hint: WordleLetterHint
 }
 
-#[wasm_bindgen]
 #[derive(Serialize, Deserialize, Clone, Copy)]
 pub enum WordleLetterHint {
     Missing,

@@ -1,19 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import RandomWord from "./random-word";
-import ValidateWord from "./validate-word";
-import Wordle from "./wordle";
-
+import Wordle from "./wordle/wordle";
 
 const App = () => {
   return (
-    <div>
-      <h1>My React and TypeScript App!</h1>
-      <RandomWord />
-      <ValidateWord />
-      <Wordle />
-    </div>
+    <Wordle length={6} />
   )
 };
 

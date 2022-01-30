@@ -1,20 +1,20 @@
-import { Configuration, HotModuleReplacementPlugin } from "webpack";
+import path from "path";
+import * as webpack from 'webpack';
+import 'webpack-dev-server';
 import { merge } from "webpack-merge"
 import base from "./webpack.base.config"
 
-const config: Configuration = merge(base, {
+const config: webpack.Configuration = merge(base, {
   mode: "development",
   plugins: [
-    new HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
   ],
   devtool: "inline-source-map",
-  // devServer: {
-  //   static: path.join(__dirname, "build"),
-  //   historyApiFallback: true,
-  //   port: 4000,
-  //   open: true,
-  //   hot: true
-  // },
+  devServer: {
+    static: path.join(__dirname, "build"),
+    historyApiFallback: true,
+    hot: true
+  },
 });
 
 export default config;
