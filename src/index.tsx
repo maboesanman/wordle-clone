@@ -5,7 +5,7 @@ import Wordle from "./wordle/wordle";
 
 const App = () => {
   return (
-    <Wordle length={6} />
+    <Wordle length={6} mode="normal" />
   )
 };
 
