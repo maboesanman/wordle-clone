@@ -33,9 +33,9 @@ export type WordleEvent = WordleEnterEvent | WordleBackEvent | WordleLetterEvent
 export const getString: (event: WordleEvent) => string = (event) => {
   switch(event.type) {
   case WordleEventType.Enter:
-    return "Enter";
+    return "↵";
   case WordleEventType.Back:
-    return "Back";
+    return "⌫";
   case WordleEventType.Letter:
     return event.letter;
   default:

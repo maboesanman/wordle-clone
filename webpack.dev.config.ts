@@ -8,6 +8,7 @@ const config: webpack.Configuration = merge(base, {
   mode: "development",
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.WatchIgnorePlugin({paths: [/scss\.d\.ts$/]}),
   ],
   devtool: "inline-source-map",
   devServer: {

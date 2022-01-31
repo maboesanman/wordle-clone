@@ -3,6 +3,8 @@ import { WordleHint } from "../lib";
 import { WordleEvent, WordleEventType } from "./events";
 import WordleKeyboardLabelComponent from "./keyboard-label";
 
+import styles from "./keyboard.module.scss"
+
 interface Props {
   eventHandler: (event: WordleEvent) => void,
   hint?: WordleHint,
@@ -10,19 +12,19 @@ interface Props {
 }
 
 const classNames = (event: WordleEvent, hint?: WordleHint) => {
-  const base = "wordle-keyboard-button";
+  const base = "button";
 
-  const classes = [base];
+  const classes = [styles[base]];
 
   switch(hint) {
     case WordleHint.Correct:
-      classes.push(`${base}--correct`);
+      classes.push(styles[`${base}--correct`]);
       break;
     case WordleHint.Misplaced:
-      classes.push(`${base}--misplaced`);
+      classes.push(styles[`${base}--misplaced`]);
       break;
     case WordleHint.Missing:
-      classes.push(`${base}--missing`);
+      classes.push(styles[`${base}--missing`]);
       break;
     default:
       break;
@@ -31,10 +33,10 @@ const classNames = (event: WordleEvent, hint?: WordleHint) => {
   switch(event.type) {
     case WordleEventType.Back:
     case WordleEventType.Enter:
-      classes.push(`${base}__control`);
+      classes.push(styles[`${base}__control`]);
       break;
     case WordleEventType.Letter:
-      classes.push(`${base}__letter`);
+      classes.push(styles[`${base}__letter`]);
       break;
     default:
       break;

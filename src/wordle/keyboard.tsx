@@ -3,6 +3,7 @@ import { WordleHint } from "../lib";
 import { WordleEvent, WordleEventType, WordleLetterEvent, WORDLE_BACK_EVENT, WORDLE_ENTER_EVENT } from "./events";
 import KeyboardButton from "./keyboard-button"
 
+import styles from "./keyboard.module.scss";
 
 export interface KeyboardHints {
   a?: WordleHint,
@@ -50,19 +51,23 @@ const KeyboardComponent: React.FC<Props> = (props) => {
 
   const renderRow = (letters: string) => [...letters].map(renderButton);
 
-  return <div className="wordle-keyboard">
-    <div className="wordle-keyboard__row-1">
-      {renderRow("qwertyuiop")}
+  return (
+    <div className={styles.keyboard}>
+      <div className={styles.keyboard__row}>
+        {renderRow("qwertyuiop")}
+      </div>
+      <div className={styles.keyboard__row}>
+        <div className={styles["button-spacer"]} />
+        {renderRow("asdfghjkl")}
+        <div className={styles["button-spacer"]} />
+      </div>
+      <div className={styles.keyboard__row}>
+        <KeyboardButton eventHandler={props.eventHandler} event={WORDLE_BACK_EVENT}/>
+        {renderRow("zxcvbnm")}
+        <KeyboardButton eventHandler={props.eventHandler} event={WORDLE_ENTER_EVENT}/>
+      </div>
     </div>
-    <div className="wordle-keyboard__row-2">
-      {renderRow("asdfghjkl")}
-    </div>
-    <div className="wordle-keyboard__row-3">
-      <KeyboardButton eventHandler={props.eventHandler} event={WORDLE_BACK_EVENT}/>
-      {renderRow("zxcvbnm")}
-      <KeyboardButton eventHandler={props.eventHandler} event={WORDLE_ENTER_EVENT}/>
-    </div>
-  </div>
+  );
 }
 
 export default KeyboardComponent;

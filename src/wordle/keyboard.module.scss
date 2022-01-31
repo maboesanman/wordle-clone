@@ -1,0 +1,51 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  // background-color: darkgrey;
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.button-spacer {
+  flex: 0.5;
+}
+
+.button {
+  margin: 2px;
+  background-color: lightgrey;
+  border-radius: 4px;
+  box-sizing: border-box;
+  min-height: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__letter {
+    flex: 1;
+  }
+
+  &__control {
+    flex: 1.5;
+  }
+
+  &--correct {
+
+  }
+
+  &--misplaced {
+    
+  }
+
+  &--missing {
+    
+  }
+}
+
+.label {
+  text-align: center;
+  text-transform: uppercase;
+  font-family: sans-serif;
+}
