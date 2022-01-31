@@ -8,7 +8,8 @@
     "lint": "eslint",
     "start": "webpack serve --config webpack.dev.config.ts",
     "build": "webpack build --config webpack.prod.config.ts",
-    "preinstall": "cd core; wasm-pack build --release"
+    "build-core": "cd core; wasm-pack build --release",
+    "run-docker": "docker build . --target final -t wordle-clone; docker run --rm -p 8080:80 wordle-clone"
   },
   "repository": {
     "type": "git",

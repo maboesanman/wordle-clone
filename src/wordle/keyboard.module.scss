@@ -32,15 +32,15 @@
   }
 
   &--correct {
-
+    background-color: lightgreen;
   }
 
   &--misplaced {
-    
+    background-color: yellow;
   }
 
   &--missing {
-    
+    background-color: darkgray;
   }
 }
 

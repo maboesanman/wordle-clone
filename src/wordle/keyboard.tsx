@@ -46,7 +46,10 @@ const KeyboardComponent: React.FC<Props> = (props) => {
       type: WordleEventType.Letter,
       letter,
     };
-    return <KeyboardButton key={letter} eventHandler={props.eventHandler} event={event}/>
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const hint = (props.hints as any)[letter];
+    return <KeyboardButton key={letter} eventHandler={props.eventHandler} event={event} hint={hint}/>
   };
 
   const renderRow = (letters: string) => [...letters].map(renderButton);

@@ -1,4 +1,4 @@
-FROM node:latest AS builder
+FROM node:latest AS rust-builder
 # common packages
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
@@ -18,7 +18,6 @@ ENV OPENSSL_LIB_DIR=/usr/local/ssl/lib \
     OPENSSL_INCLUDE_DIR=/usr/local/ssl/include \
     OPENSSL_STATIC=1
 
-# install all 3 toolchains
 RUN curl https://sh.rustup.rs -sSf | \
     sh -s -- --default-toolchain stable -y
 
@@ -27,8 +26,15 @@ ENV PATH=/root/.cargo/bin:$PATH
 RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
 WORKDIR /app
-COPY package-lock.json package.json ./
 COPY core core
+WORKDIR /app/core
+RUN wasm-pack build --release
+
+FROM node:latest AS js-builder
+
+WORKDIR /app
+COPY package-lock.json package.json ./
+COPY --from=rust-builder /app/core/pkg /app/core/pkg
 RUN npm ci
 
 COPY . .
@@ -37,7 +43,7 @@ RUN npm run build
 
 FROM alpine as compresser
 RUN apk add brotli
-COPY --from=builder /app/dist /app/dist
+COPY --from=js-builder /app/dist /app/dist
 RUN find /app/dist -type f -regex ".*\.\(js\|html\|wasm\)" -exec gzip -k -9 {} \; -exec brotli -k -Z {} \;
 
 FROM macbre/nginx-brotli:latest as final

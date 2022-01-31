@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getRandomWord, validateWord } from "./../lib";
+import { getRandomWord, validateWord, WordleHint } from "./../lib";
 import WordleRowComponent, { RowData } from "./wordle-row";
 import Keyboard, { KeyboardHints } from "./keyboard";
 import { WordleEvent, WordleEventType } from "./events";
@@ -75,7 +75,13 @@ const WordleComponent: React.FC<Props> = (props) => {
   }
 
   const keyboardHints: () => KeyboardHints = () => {
-    return {}
+    return {
+      h: WordleHint.Correct,
+      o: WordleHint.Missing,
+      u: WordleHint.Misplaced,
+      s: WordleHint.Missing,
+      e: WordleHint.Correct,
+    }
   }
 
   return (<div>
