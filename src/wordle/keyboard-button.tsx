@@ -1,6 +1,6 @@
 import React from "react";
 import { WordleHint } from "../lib";
-import { WordleEvent, WordleEventType } from "./events";
+import { WordleEvent, WordleEventType } from "./wordle-types";
 import WordleKeyboardLabelComponent from "./keyboard-label";
 
 import styles from "./keyboard.module.scss"

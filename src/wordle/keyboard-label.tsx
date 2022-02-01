@@ -1,5 +1,6 @@
 import React from "react";
-import { getString, WordleEvent } from "./events"
+import { getString } from "./events"
+import { WordleEvent } from "./wordle-types";
 
 import styles from "./keyboard.module.scss";
 

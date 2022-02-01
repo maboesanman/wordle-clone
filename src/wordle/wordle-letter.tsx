@@ -1,7 +1,8 @@
 import React from "react";
+import { LetterData } from "./wordle-types";
 
-export default class WordleComponent extends React.Component {
-  render() {
-    return <div>Wordle</div>
-  }
+const WordleLetterComponent: React.FC<LetterData> = (props) => {
+  return <div>{props.character ?? "_"}</div>
 }
+
+export default WordleLetterComponent;

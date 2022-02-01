@@ -1,7 +1,6 @@
 .keyboard {
   display: flex;
   flex-direction: column;
-  // background-color: darkgrey;
 
   &__row {
     display: flex;
@@ -18,10 +17,15 @@
   background-color: lightgrey;
   border-radius: 4px;
   box-sizing: border-box;
-  min-height: 3em;
+  height: 3em;
+  min-height: 1.5em;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  &:active {
+    filter: brightness(0.85);
+  }
 
   &__letter {
     flex: 1;

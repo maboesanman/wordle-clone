@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { getRandomWord, validateWord, WordleHint } from "./../lib";
-import WordleRowComponent, { RowData } from "./wordle-row";
+import WordleBoardComponent from "./wordle-board";
 import Keyboard, { KeyboardHints } from "./keyboard";
-import { WordleEvent, WordleEventType } from "./events";
+import { RowData, WordleEvent, WordleEventType } from "./wordle-types";
 
 export interface Props {
   length: number;
@@ -28,7 +28,6 @@ const WordleComponent: React.FC<Props> = (props) => {
     newGuesses[newGuesses.length - 1] = v;
     setGuesses(newGuesses);
   };
-
 
   const wordleRows: () => RowData[] = () => {
     const result: RowData[] = [];
@@ -84,13 +83,11 @@ const WordleComponent: React.FC<Props> = (props) => {
     }
   }
 
+  const rowData = wordleRows();
+
   return (<div>
-    <div className="wordle__board">
-      {wordleRows().map((rowData, i) => <WordleRowComponent key={i} data={rowData} />)}
-    </div>
-    <div className="wordle__keyboard">
-      <Keyboard eventHandler={handleEvent} hints={keyboardHints()} />
-    </div>
+    <WordleBoardComponent rows={rowData} />
+    <Keyboard eventHandler={handleEvent} hints={keyboardHints()} />
   </div>)
 };
 
