@@ -7,7 +7,6 @@ export const getRandomWord = async (n: number): Promise<string> => {
 
 export const validateWord = async (word: string): Promise<boolean> => {
   const wordleCloneLib = await wordleClone;
-  debugger;
   return wordleCloneLib.validate_word(word)
 }
 

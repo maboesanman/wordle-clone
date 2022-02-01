@@ -4,6 +4,8 @@ import WordleBoardComponent from "./wordle-board";
 import Keyboard, { KeyboardHints } from "./keyboard";
 import { RowData, WordleEvent, WordleEventType } from "./wordle-types";
 
+import styles from "./wordle.module.scss";
+
 export interface Props {
   length: number;
   rows?: number;
@@ -85,10 +87,19 @@ const WordleComponent: React.FC<Props> = (props) => {
 
   const rowData = wordleRows();
 
-  return (<div>
-    <WordleBoardComponent rows={rowData} />
-    <Keyboard eventHandler={handleEvent} hints={keyboardHints()} />
-  </div>)
+  return (
+    <div className={styles["wordle__wrapper"]}>
+      <div className={styles["wordle"]}>
+        <div className={styles["wordle__board"]}>
+          <WordleBoardComponent rows={rowData} />
+        </div>
+
+        <div className={styles["wordle__keyboard"]}>
+          <Keyboard eventHandler={handleEvent} hints={keyboardHints()} />
+        </div>
+      </div>
+    </div>
+  )
 };
 
 export default WordleComponent;

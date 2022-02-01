@@ -14,7 +14,7 @@ const config: webpack.Configuration = merge(base, {
   devServer: {
     static: path.join(__dirname, "build"),
     historyApiFallback: true,
-    hot: true
+    hot: true,
   },
 });
 

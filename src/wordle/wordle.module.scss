@@ -1,0 +1,40 @@
+.wordle__wrapper {
+  display: flex;
+  position:absolute;
+  top:0px;
+  right:0px;
+  bottom:0px;
+  left:0px;
+
+  @media (min-aspect-ratio: 9 / 16) {
+    justify-content: center;
+  }
+  
+  @media (max-aspect-ratio: 9 / 16) {
+    flex-direction: column;
+    justify-content: stretch;
+  }
+}
+
+.wordle {
+  display:flex;
+  flex-direction: column;
+  justify-content:center;
+  max-height: 100vh;
+
+  @media (min-aspect-ratio: 9 / 16) {
+    aspect-ratio: 9 / 16;
+  }
+  
+  @media (max-aspect-ratio: 9 / 16) {
+    height: 100vh;
+  }
+
+  &__board {
+    padding: 10%;
+  }
+
+  &__keyboard {
+    padding: 10px;
+  }
+}

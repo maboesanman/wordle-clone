@@ -3,6 +3,7 @@ import { LetterData, RowData } from "./wordle-types";
 import { evaluateGuess, WordleHint } from "./../lib";
 import WordleLetterComponent from "./wordle-letter";
 
+import styles from "./board.module.scss";
 
 const WordleRowComponent: React.FC<RowData> = (props) => {
   const [hintsPromise, setHintsPromise] = useState<undefined | Promise<WordleHint[]>>(undefined);
@@ -37,9 +38,8 @@ const WordleRowComponent: React.FC<RowData> = (props) => {
       })
     }
   }
-  // debugger;
 
-  return <div>{
+  return <div className={styles["wordle__row"]}>{
     letters.map((letterData, i) => <WordleLetterComponent key={i} {...letterData} />)
   }</div>
 }
