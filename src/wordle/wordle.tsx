@@ -3,6 +3,7 @@ import { getRandomWord, validateWord } from "./../lib";
 import WordleBoardComponent from "./wordle-board";
 import Keyboard from "./keyboard";
 import { RowData, WordleEvent, WordleEventType } from "./wordle-types";
+import ResultComponent from "./result";
 
 import styles from "./wordle.module.scss";
 
@@ -18,9 +19,11 @@ const WordleComponent: React.FC<Props> = (props) => {
   const [length] = useState(props.length);
   const [rows] = useState(props.rows ?? 6);
   const [word] = useState<Promise<string>>((async () => {
-    return props.word ?? await getRandomWord(length)
+    return props.word ?? await getRandomWord(length);
   })());
-  // const [mode] = useState(props.mode);
+  const [wordAwaited, setWordAwaited] = useState("");
+  const [victory, setVictory] = useState(false);
+  const [complete, setComplete] = useState(false);
 
   const [waiting, setWaiting] = useState(false);
   const [guesses, setGuesses] = useState<string[]>([""]);
@@ -37,7 +40,7 @@ const WordleComponent: React.FC<Props> = (props) => {
       result.push({
         length,
         guess: guesses[i] ?? "",
-        entered: guesses.length - 1 > i,
+        entered: (guesses.length - 1 > i),
         word,
       })
     }
@@ -63,14 +66,24 @@ const WordleComponent: React.FC<Props> = (props) => {
         if(waiting) break;
         if(currentGuess.length !== length) break;
         setWaiting(true);
+        setWordAwaited(await word);
         if(currentGuess === await word) {
-          // check for victory
+          setComplete(true);
+          setVictory(true);
+          setGuesses([...guesses, ""]);
+          break;
         }
+
         const wordValid = await validateWord(currentGuess);
         setWaiting(false);
         if(!wordValid) break;
 
+        if(guesses.length === rows) {
+          setComplete(true);
+          setVictory(false);
+        }
         setGuesses([...guesses, ""]);
+        
         break;
     }
   }
@@ -83,7 +96,9 @@ const WordleComponent: React.FC<Props> = (props) => {
         <div className={styles["wordle__board"]}>
           <WordleBoardComponent rows={rowData} />
         </div>
-
+        <div className={styles["wordle__result"]}>
+          {complete ? <ResultComponent victory={victory} word={wordAwaited} /> : undefined}
+        </div>
         <div className={styles["wordle__keyboard"]}>
           <Keyboard eventHandler={handleEvent} rowData={rowData} />
         </div>
