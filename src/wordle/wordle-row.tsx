@@ -1,46 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { LetterData, RowData } from "./wordle-types";
-import { evaluateGuess, WordleHint } from "./../lib";
 import WordleLetterComponent from "./wordle-letter";
+
+import { splitRow, splitRowSkipHint } from "./lib";
 
 import styles from "./board.module.scss";
 
-const WordleRowComponent: React.FC<RowData> = (props) => {
-  const [hintsPromise, setHintsPromise] = useState<undefined | Promise<WordleHint[]>>(undefined);
-  const [hints, setHints] = useState<undefined | WordleHint[]>(undefined);
-  
-  useEffect(() => {
-    if(props.entered) {
-      if(hintsPromise === undefined) {
-        const newPromise = props.word.then(w => evaluateGuess(w, props.guess));
-        setHintsPromise(newPromise)
-        setHints(undefined)
-        newPromise.then(h => setHints(h))
-      }
-    } else {
-      setHintsPromise(undefined)
-      setHints(undefined)
-    }
-  }, [props.entered, props.guess, props.word, hintsPromise])
+interface Props {
+  row: RowData;
+}
 
-  const letters: LetterData[] = [];
-  for(let i = 0; i < props.length; i++) {
-    if(hints !== undefined) {
-      letters.push({
-        entered: true,
-        character: props.guess[i],
-        hint: hints[i],
-      })
-    } else {
-      letters.push({
-        entered: false,
-        character: props.guess[i],
-      })
-    }
-  }
+const WordleRowComponent: React.FC<Props> = (props) => {
+  const [lettersPromise, setLettersPromise] = useState<Promise<LetterData[]>>(splitRow(props.row));
+  const [letters, setLetters] = useState<LetterData[]>(splitRowSkipHint(props.row))
+
+  useEffect(() => {
+    setLettersPromise(splitRow(props.row));
+    setLetters(splitRowSkipHint(props.row));
+  }, [props.row])
+
+  useEffect(() => {
+    lettersPromise.then(l => setLetters(l));
+  }, [lettersPromise])
 
   return <div className={styles["wordle__row"]}>{
-    letters.map((letterData, i) => <WordleLetterComponent key={i} {...letterData} />)
+    letters.map((letterData, i) => <WordleLetterComponent key={i} letter={letterData} />)
   }</div>
 }
 

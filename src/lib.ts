@@ -11,9 +11,9 @@ export const validateWord = async (word: string): Promise<boolean> => {
 }
 
 export enum WordleHint {
-  Correct,
-  Misplaced,
-  Missing,
+  Correct = 2,
+  Misplaced = 1,
+  Missing = 0,
 }
 
 export const evaluateGuess = async (word: string, guess: string): Promise<WordleHint[]> => {

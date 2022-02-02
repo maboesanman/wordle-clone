@@ -10,7 +10,7 @@ export interface Props {
 
 const WordleBoardComponent: React.FC<Props> = (props) => {
   return <div className={styles["wordle__board"]}>
-    {props.rows.map((rowData, i) => <WordleRowComponent key={i} {...rowData} />)}
+    {props.rows.map((rowData, i) => <WordleRowComponent key={i} row={rowData} />)}
   </div>
 }
 
