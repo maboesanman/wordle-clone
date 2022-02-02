@@ -54,10 +54,12 @@ fn main() {
     }
 
     final_dictionary.retain(|_, c| c > &mut 4);
+    final_dictionary.retain(|s, _| s.is_ascii());
+
     let mut final_dictionary: Vec<_> = final_dictionary.drain().map(|(s, _)| s).collect();
     final_dictionary.sort();
 
-    let file_name = format!("dictionaries.rs");
+    let file_name = "dictionaries.rs";
     let file_path = Path::new(&out_dir).join(file_name);
     let mut dictionaries = File::create(file_path).unwrap();
     dictionaries.write("{let mut dictionaries = HashMap::<usize, _>::new();".as_bytes()).unwrap();
@@ -70,7 +72,7 @@ fn main() {
             let file_path = Path::new(&out_dir).join(&file_name);
             let file = File::create(file_path).unwrap();
             output_words.insert(word_len, BufWriter::new(file));
-            let inc_new_dict = format!("dictionaries.insert({word_len}, include_str!(concat!(env!(\"OUT_DIR\"), \"/{file_name}\")));\n");
+            let inc_new_dict = format!("dictionaries.insert({word_len}, include_bytes!(concat!(env!(\"OUT_DIR\"), \"/{file_name}\")).as_slice());\n");
             dictionaries.write(inc_new_dict.as_bytes()).unwrap();
         }
         let file = output_words.get_mut(&word_len).unwrap();

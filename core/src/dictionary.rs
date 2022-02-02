@@ -3,11 +3,11 @@ use rand::distributions::Distribution;
 
 pub struct Dictionary<'dict> {
     pub word_size: usize,
-    words: &'dict str,
+    words: &'dict [u8],
 }
 
 impl<'dict> Dictionary<'dict> {
-    pub fn new(word_size: usize, words: &'dict str) -> Self {
+    pub fn new(word_size: usize, words: &'dict [u8]) -> Self {
         Self {
             word_size,
             words,
@@ -22,34 +22,25 @@ impl<'dict> Dictionary<'dict> {
     }
 
     pub fn validate_word(&self, word: &str) -> bool {
-        let query = word;
-        let i = self.dict_size();
-        let i = i.next_power_of_two();
-        let mut i = i >> 1;
-
+        let mut start = 0;
+        let mut end = self.dict_size();
         loop {
-            if i.trailing_zeros() == 0 {
-                break;
+            if start == end - 1 {
+                let start_str = unsafe { self.get_word_unchecked(start) };
+                break start_str == word;
             }
-            let pivot = match self.get_word(i) {
-                Some(w) => w,
-                None => return false,
-            };
-            let step = 1 << (i.trailing_zeros() - 1);
-            match query.cmp(pivot) {
-                std::cmp::Ordering::Equal => return true,
-                std::cmp::Ordering::Less => i -= step,
-                std::cmp::Ordering::Greater => i += step,
-            }
-        }
 
-        match self.get_word(i) {
-            Some(w) => {
-                w == query
-            },
-            None => return false,
+            let pivot = (start + end) / 2;
+            let pivot_str = unsafe { self.get_word_unchecked(pivot) };
+            match word.cmp(pivot_str) {
+                std::cmp::Ordering::Equal => return true,
+                std::cmp::Ordering::Less => end = pivot,
+                std::cmp::Ordering::Greater => start = pivot,
+            }
         }
     }
+
+
 
     pub fn get_word(&self, index: usize) -> Option<&'dict str> {
         if index >= self.dict_size() {
@@ -60,7 +51,9 @@ impl<'dict> Dictionary<'dict> {
 
     unsafe fn get_word_unchecked(&self, index: usize) -> &'dict str {
         let index = index * self.word_size;
-        &self.words[index..(index + self.word_size)]
+
+        // build.rs ensures all words are ascii
+        std::str::from_utf8_unchecked(&self.words.get_unchecked(index..(index + self.word_size)))
     }
 
     fn dict_size(&self) -> usize {

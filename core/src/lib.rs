@@ -1,42 +1,10 @@
 mod utils;
 mod dictionary;
 mod wordle;
+mod static_vars;
 
-use crate::dictionary::Dictionary;
-
-use std::{collections::HashMap, sync::{Mutex, MutexGuard}};
-
-use once_cell::sync::OnceCell;
-use rand::SeedableRng;
-use rand_chacha::ChaCha8Rng;
 use wasm_bindgen::prelude::*;
 use wordle::WordleGuess;
-
-pub static DICTIONARIES: OnceCell<HashMap<usize, Dictionary<'static>>> = OnceCell::new();
-pub static RNG: OnceCell<Mutex<ChaCha8Rng>> = OnceCell::new();
-
-fn get_dictionary(n: u32) -> Option<&'static Dictionary<'static>> {
-    let dicts = DICTIONARIES.get_or_init(|| {
-        let raw: HashMap<usize, &'static str> = include!(concat!(env!("OUT_DIR"), "/dictionaries.rs"));
-        
-        let mut converted: HashMap<usize, Dictionary<'static>> = HashMap::new();
-        for (n, s) in raw {
-            converted.insert(n, Dictionary::new(n, s));
-        }
-        converted
-    });
-
-    dicts.get(&(n as usize))
-}
-
-fn get_rng() -> MutexGuard<'static, ChaCha8Rng> {
-    RNG.get_or_init(|| {
-        let mut seed: [u8; 32] = [0; 32];
-        getrandom::getrandom(&mut seed).unwrap();
-        let rng = ChaCha8Rng::from_seed(seed);
-        Mutex::new(rng)
-    }).lock().unwrap()
-}
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -47,11 +15,11 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 /// get a random n letter English word.
 #[wasm_bindgen]
 pub fn get_random_word(n: u32) -> String {
-    let dict = match get_dictionary(n) {
+    let dict = match static_vars::get_dictionary(n) {
         Some(d) => d,
         None => return "".to_string(),
     };
-    let mut rng = get_rng();
+    let mut rng = static_vars::get_rng();
     let rng = &mut *rng;
     dict.random_word(rng).to_string()
 }
@@ -59,7 +27,7 @@ pub fn get_random_word(n: u32) -> String {
 /// determine if `word` is a valid english word or not.
 #[wasm_bindgen]
 pub fn validate_word(word: &str) -> bool {
-    let dict = match get_dictionary(word.len() as u32) {
+    let dict = match static_vars::get_dictionary(word.len() as u32) {
         Some(d) => d,
         None => return false,
     };
