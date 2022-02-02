@@ -1,0 +1,26 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker builder image
+      run: docker build . --target js-builder --file Dockerfile --tag wordle-builder
+    - name: create container
+      run: docker create --name wordle-builder-container wordle-builder
+    - name: copy files out of container
+      run: docker cp wordle-builder-container:/app/dist ./dist
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4.2.3
+      with:
+        branch: gh-pages
+        folder: dist
+  
