@@ -11,7 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository and submodules
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Build the Docker builder image
       run: docker build . --target js-builder --file Dockerfile --tag wordle-builder
     - name: create container
