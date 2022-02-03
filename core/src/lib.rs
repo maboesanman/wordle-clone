@@ -55,13 +55,13 @@ pub fn evaluate_guess(word: &str, guess: &str) -> String {
 /// determine if the guesses are legal according to hard mode
 /// guesses are whitespace separated
 #[wasm_bindgen]
-pub fn validate_hard(word: &str, guesses: &str) -> bool {
+pub fn validate_hard(_word: &str, _guesses: &str) -> bool {
     todo!()
 }
 
 /// determine if the guesses are legal according to hardcore mode
 /// guesses are whitespace separated
 #[wasm_bindgen]
-pub fn validate_hardcore(word: &str, guesses: &str) -> bool {
+pub fn validate_hardcore(_word: &str, _guesses: &str) -> bool {
     todo!()
 }
