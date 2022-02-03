@@ -1,34 +1,9 @@
-.wordle__wrapper {
-  display: flex;
-  position:absolute;
-  top:0px;
-  right:0px;
-  bottom:0px;
-  left:0px;
-
-  @media (min-aspect-ratio: 9 / 16) {
-    justify-content: center;
-  }
-  
-  @media (max-aspect-ratio: 9 / 16) {
-    flex-direction: column;
-    justify-content: stretch;
-  }
-}
-
 .wordle {
+  grid-area: wordle;
+
   display:flex;
   flex-direction: column;
   justify-content:center;
-  max-height: 100vh;
-
-  @media (min-aspect-ratio: 9 / 16) {
-    aspect-ratio: 9 / 16;
-  }
-  
-  @media (max-aspect-ratio: 9 / 16) {
-    height: 100vh;
-  }
 
   &__board {
     padding: 10%;
@@ -36,5 +11,32 @@
 
   &__keyboard {
     padding: 10px;
+  }
+
+  &__wrapper {
+    // set up element to cover whole screen
+    position: absolute;
+    top:0px;
+    right:0px;
+    bottom:0px;
+    left:0px;
+
+    // set up grid
+    display: grid;
+  
+    @media (min-aspect-ratio: 1 / 2) {
+      grid-template-columns: auto 50vh auto;
+      grid-template-rows: auto;
+      grid-template-areas: ". wordle .";
+    }
+    
+    @media (max-aspect-ratio: 1 / 2) {
+      grid-template-columns: auto;
+      grid-template-rows: auto 200vw auto;
+      grid-template-areas:
+        "."
+        "wordle"
+        ".";
+    }
   }
 }
