@@ -1,10 +1,15 @@
-import { WordleHint } from "../lib"
+import { libPromise, WordleHint } from "../lib"
 
 export interface RowData {
   length: number;
   guess: string;
   entered: boolean;
-  word: Promise<string>;
+  lazy?: RowDataLazy;
+}
+
+export interface RowDataLazy {
+  word: string,
+  lib: Awaited<typeof libPromise>,
 }
 
 export interface LetterDataEntered {
@@ -72,3 +77,28 @@ export interface WordleLetterEvent {
 
 export type WordleEvent = WordleEnterEvent | WordleBackEvent | WordleLetterEvent;
 
+export interface GameState {
+  guesses: string[];
+  length: number;
+  rows: number;
+  victory: boolean;
+  complete: boolean;
+  lazyState?: LazyState;
+}
+
+export interface LazyState {
+  word: string,
+  lib: Awaited<typeof libPromise>,
+}
+
+export type GameAction = GameKeyboardAction | GameLoadedAction;
+
+export interface GameKeyboardAction {
+  type: "keyboard";
+  event: WordleEvent;
+}
+
+export interface GameLoadedAction {
+  type: "loaded";
+  lazyState: LazyState;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { WordleHint } from "../lib";
 import { WORDLE_BACK_EVENT, WORDLE_ENTER_EVENT } from "./events";
 import { RowData, WordleEvent, WordleEventType, WordleLetterEvent } from "./wordle-types";
@@ -42,16 +42,7 @@ interface Props {
 }
 
 const KeyboardComponent: React.FC<Props> = (props) => {
-  const [hintsPromise, setHintsPromise] = useState<Promise<Record<string, WordleHint>>>(getAggregateHints(props.rowData));
-  const [hints, setHints] = useState<Record<string, WordleHint>>({})
-
-  useEffect(() => {
-    setHintsPromise(getAggregateHints(props.rowData));
-  }, [props.rowData])
-
-  useEffect(() => {
-    hintsPromise.then(l => setHints(l));
-  }, [hintsPromise])
+  const hints = getAggregateHints(props.rowData);
 
   const renderButton = (letter: string) => {
     const event: WordleLetterEvent = {

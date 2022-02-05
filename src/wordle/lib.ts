@@ -1,31 +1,26 @@
-import { LetterData, RowData } from "./wordle-types";
-import { evaluateGuess, WordleHint } from "./../lib";
-
-export const splitRowSkipHint: (
-  row: RowData,
-) => LetterData[] = (row) => {
-  const letters: LetterData[] = [];
-  for(let i = 0; i < row.length; i++) {
-    letters.push({
-      entered: false,
-      character: row.guess[i],
-    });
-  }
-
-  return letters;
-}
+import { WordleHint } from "../lib";
+import { GameState, LetterData, RowData, RowDataLazy } from "./wordle-types";
 
 export const splitRow: (
   row: RowData,
-) => Promise<LetterData[]> = async (row) => {
-  if(!row.entered) {
-    return splitRowSkipHint(row);
-  }
-  const hints = await evaluateGuess(await row.word, row.guess);
+) => LetterData[] = (row) => {
+  const lazy = row.lazy;
   const letters: LetterData[] = [];
+
+  let hints: WordleHint[];
+  let entered: boolean;
+
+  if(lazy && row.entered) {
+    hints = lazy.lib.evaluateGuess(lazy.word, row.guess);
+    entered = true;
+  } else {
+    hints = [];
+    entered = false;
+  }
+
   for(let i = 0; i < row.length; i++) {
     letters.push({
-      entered: true,
+      entered,
       character: row.guess[i],
       hint: hints[i],
     });
@@ -36,12 +31,15 @@ export const splitRow: (
 
 export const getAggregateHints: (
   rows: RowData[],
-) => Promise<Record<string, WordleHint>> = async (rows) => {
+) => Record<string, WordleHint> = (rows) => {
   const hints: Record<string, WordleHint> = {};
 
   for ( const row of rows) {
+    if(row.lazy === undefined) {
+      return {};
+    }
     if(row.entered) {
-      const rowHints = await evaluateGuess(await row.word, row.guess);
+      const rowHints = row.lazy.lib.evaluateGuess(row.lazy.word, row.guess);
       for(let i = 0; i < row.guess.length; i++) {
         const prev = hints[row.guess[i]] ?? -1 as number;
         const next = rowHints[i] ?? 0 as number;
@@ -53,4 +51,22 @@ export const getAggregateHints: (
   }
   
   return hints;
+}
+
+export const wordleRows = (gameState: GameState) => {
+  const result: RowData[] = [];
+
+  const lazy: RowDataLazy | undefined = gameState.lazyState ? {
+    word: gameState.lazyState.word,
+    lib: gameState.lazyState.lib,
+  } : undefined;
+  for (let i = 0; i < gameState.rows; i++) {
+    result.push({
+      length: gameState.length,
+      guess: gameState.guesses[i] ?? "",
+      entered: (gameState.guesses.length - 1 > i),
+      lazy,
+    })
+  }
+  return result
 }
